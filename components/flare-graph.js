@@ -166,7 +166,7 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
     }
 
     const groupLabels = {
-      veteran: "Veteran Data",
+      veteran: "Veterans",
       moc_skill: "MOS Skills",
       job_skill: "Job Skills",
       job: "Job Postings"
@@ -175,7 +175,7 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
     const labelConfig = {
       veteran: {
         angleOffset: -5,
-        r: radius + 160,
+        r: radius + 120,
         anchor: "start",
         rotation: -85
       },
@@ -309,7 +309,7 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
     const vets = nodeGroup.filter((d) => d.data.type === "veteran");
     vets.each(function (d) {
       const g = d3.select(this),
-        avatarSize = 24,
+        avatarSize = 28,
         avatarRad = avatarSize / 2,
         rawNode = raw.nodes.find((n) => n.id === d.data.origId),
         imgUrl = rawNode?.imageUrl,
@@ -345,22 +345,28 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
         .append("text")
         .text(name)
         .attr("x", 0)
-        .attr("y", avatarRad + 12) // 12px below bottom of avatar
+        .attr("y", avatarRad + 10) // 12px below bottom of avatar
         .attr("text-anchor", "middle")
         .attr("font-size", "12px")
         .attr("fill", "#333")
         .attr("transform", "rotate(180)")
         .style("pointer-events", "none")
-        .style("opacity", 1);
+        .style("opacity", 0);
 
-      // 3) mouse events to show/hide label
-      // chip
-      //   .on("mouseover", () =>
-      //     label.transition().duration(100).style("opacity", 1)
-      //   )
-      //   .on("mouseout", () =>
-      //     label.transition().duration(100).style("opacity", 0)
-      //   );
+      const baseTransform = chip.attr("transform") || "";
+
+      chip
+        .on("mouseover", () => {
+          label.transition().duration(100).style("opacity", 1);
+          chip
+            .transition()
+            .duration(100)
+            .attr("transform", baseTransform + " scale(1.5)");
+        })
+        .on("mouseout", () => {
+          label.transition().duration(100).style("opacity", 0);
+          chip.transition().duration(100).attr("transform", baseTransform);
+        });
     });
 
     function clearSelection() {
