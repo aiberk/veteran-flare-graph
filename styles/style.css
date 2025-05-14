@@ -14,11 +14,12 @@ body {
 /* by default the <svg> is full-screen */
 svg {
   flex: 1; /* grow to fill available vertical space */
-  width: 100%;
+  width: 90%;
   height: auto; /* height determined by flex */
 }
 img {
   display: block;
+  max-width: 100px;
 }
 /* honor the hidden attribute */
 img[hidden] {
@@ -70,9 +71,14 @@ img[hidden] {
     top: auto;
     left: 0;
     width: 100%;
-    max-height: 50vh; /* match the calc() above */
+    max-height: 50vh;
     border-radius: 8px 8px 0 0;
     overflow-y: auto;
+
+    /* ensure padding doesn’t blow out the width */
+    box-sizing: border-box;
+    /* add horizontal padding so both sides have breathing room */
+    padding: 16px;
   }
 
   #details {

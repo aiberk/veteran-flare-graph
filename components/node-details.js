@@ -18,7 +18,7 @@ template.innerHTML = `
     }
     img {
       /* when present, show as a cover image */
-      width: 100%;
+      width: 100px;
       height: auto;
       max-height: 150px;
       object-fit: cover;

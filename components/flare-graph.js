@@ -39,6 +39,7 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
       groups.get(n.type).children.push({
         name: n.name,
         type: n.type,
+        imageUrl: n.imageUrl,
         origId: n.id,
         imports: []
       });
@@ -79,9 +80,6 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
     return node.data.name;
   }
 
-  // Declare Bezier curves
-  const BezierCurve = BezierCurveFactory();
-
   // 5) layout & draw
   function drawChart() {
     // 1) clear any existing SVG
@@ -90,7 +88,7 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
     // 2) compute dimensions from the current window
     const width = window.innerWidth,
       height = window.innerHeight,
-      radius = Math.min(width, height) / 2 - 220;
+      radius = Math.min(width, height) / 2 - 250;
 
     // 3) rebuild the hierarchy & root
     const flareData = buildFlareData(raw);
@@ -177,7 +175,7 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
     const labelConfig = {
       veteran: {
         angleOffset: -5,
-        r: radius + 140,
+        r: radius + 160,
         anchor: "start",
         rotation: -85
       },
@@ -309,33 +307,64 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
 
     const vets = nodeGroup.filter((d) => d.data.type === "veteran");
     vets.each(function (d) {
-      const g = d3.select(this);
-      const avatarSize = 16;
-      const padding = 4;
-      const flip = d.x > Math.PI;
+      const g = d3.select(this),
+        avatarSize = 24,
+        padding = 6,
+        flip = d.x > Math.PI;
+
+      // 1) group (and flip on left side)
       const chip = g
         .append("g")
-        .attr("transform", flip ? "scale(1,-1,-1)" : null);
+        .attr("transform", flip ? "scale(-1,-1)" : null);
+
+      // 2) text + pill
       const txt = chip
         .append("text")
-        .attr("x", avatarSize / 10 + padding * -22)
+        .attr("x", (-10 * avatarSize) / 2 + padding)
         .attr("dy", "0.31em")
-        .attr("transform", d.x > Math.PI ? "rotate(-180)" : "rotate(0)")
+        .attr("text-anchor", "start")
         .text(d.data.name);
+
       const bbox = txt.node().getBBox();
       chip
         .insert("rect", "text")
-        .attr("x", -avatarSize / 2 - padding)
-        .attr("y", -bbox.height / 2 - padding)
-        .attr("width", avatarSize + bbox.width + padding * 10)
-        .attr("height", bbox.height + padding * 2)
-        .attr("rx", (bbox.height + padding * 2) / 2)
+        .attr("x", bbox.x - padding)
+        .attr("y", bbox.y - padding)
+        .attr("width", bbox.width + 2 * padding)
+        .attr("height", bbox.height + 2 * padding)
+        .attr("rx", (bbox.height + 2 * padding) / 2)
         .attr("fill", "#f0f0f0");
-      chip
-        .append("circle")
-        .attr("cx", -bbox.width / 20)
-        .attr("r", avatarSize / 2)
-        .attr("fill", "#666");
+
+      // 3) avatar slot
+      if (d.data.imageUrl) {
+        // define the clipPath once, in defs:
+        defs
+          .append("clipPath")
+          .attr("id", `clip-${d.data.origId}`)
+          .append("circle")
+          .attr("r", avatarSize / 2)
+          .attr("cx", -avatarSize / 2)
+          .attr("cy", 0);
+
+        chip
+          .append("image")
+          .attr("href", d.data.imageUrl)
+          .attr("width", avatarSize)
+          .attr("height", avatarSize)
+          .attr("x", -avatarSize)
+          .attr("y", -avatarSize / 2)
+          .attr("clip-path", `url(#clip-${d.data.origId})`);
+      } else {
+        // gray fallback
+        chip
+          .append("circle")
+          .attr("cx", -avatarSize / 2)
+          .attr("r", avatarSize / 2)
+          .attr("fill", "#ccc");
+      }
+
+      // 4) keep text upright if flipped
+      if (flip) chip.selectAll("text").attr("transform", "scale(1,1)");
     });
 
     function clearSelection() {
