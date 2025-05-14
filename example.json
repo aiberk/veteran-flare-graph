@@ -1,0 +1,73 @@
+{
+  "nodes": [
+    { "id": "vet-1", "type": "veteran", "name": "John Doe" },
+    { "id": "vet-2", "type": "veteran", "name": "Jane Smith" },
+    { "id": "vet-3", "type": "veteran", "name": "Bob Johnson" },
+    { "id": "vet-4", "type": "veteran", "name": "Alice Williams" },
+    { "id": "vet-5", "type": "veteran", "name": "Carlos Diaz" },
+    { "id": "vet-6", "type": "veteran", "name": "Emily Zhang" },
+    { "id": "vet-7", "type": "veteran", "name": "Samuel Lee" },
+    { "id": "vet-8", "type": "veteran", "name": "Patricia O'Connor" },
+
+    { "id": "mos-1", "type": "moc_skill", "name": "Infantry (11B)" },
+    { "id": "mos-2", "type": "moc_skill", "name": "Logistics (92F)" },
+    { "id": "mos-3", "type": "moc_skill", "name": "Culinary (12B)" },
+    { "id": "mos-4", "type": "moc_skill", "name": "Medical (68W)" },
+    { "id": "mos-5", "type": "moc_skill", "name": "Signals (25B)" },
+
+    { "id": "js-1", "type": "job_skill", "name": "Leadership" },
+    { "id": "js-2", "type": "job_skill", "name": "Project Management" },
+    { "id": "js-3", "type": "job_skill", "name": "Welding" },
+    { "id": "js-4", "type": "job_skill", "name": "IT Support" },
+    { "id": "js-5", "type": "job_skill", "name": "Data Analysis" },
+
+    { "id": "job-1", "type": "job", "name": "Project Manager\nAcme Corp" },
+    { "id": "job-2", "type": "job", "name": "Welder\nBuildIt LLC" },
+    { "id": "job-3", "type": "job", "name": "IT Specialist\nTech Solutions" },
+    { "id": "job-4", "type": "job", "name": "Data Analyst\nDataCorp" },
+    { "id": "job-5", "type": "job", "name": "Trainer\nSkillUp" }
+  ],
+  " links": [
+    { "source": "vet-1", "target": "mos-1" },
+    { "source": "vet-2", "target": "mos-2" },
+    { "source": "vet-3", "target": "mos-3" },
+    { "source": "vet-4", "target": "mos-4" },
+    { "source": "vet-5", "target": "mos-5" },
+    { "source": "vet-6", "target": "mos-4" },
+    { "source": "vet-7", "target": "mos-1" },
+    { "source": "vet-8", "target": "mos-2" },
+
+    { "source": "mos-1", "target": "js-1" },
+    { "source": "mos-1", "target": "js-2" },
+    { "source": "mos-2", "target": "js-2" },
+    { "source": "mos-2", "target": "js-5" },
+    { "source": "mos-3", "target": "js-1" },
+    { "source": "mos-3", "target": "js-4" },
+    { "source": "mos-4", "target": "js-4" },
+    { "source": "mos-4", "target": "js-5" },
+    { "source": "mos-5", "target": "js-4" },
+    { "source": "mos-5", "target": "js-5" },
+
+    { "source": "vet-1", "target": "js-1" },
+    { "source": "vet-1", "target": "js-2" },
+    { "source": "vet-2", "target": "js-4" },
+    { "source": "vet-3", "target": "js-3" },
+    { "source": "vet-4", "target": "js-4" },
+    { "source": "vet-5", "target": "js-5" },
+    { "source": "vet-6", "target": "js-1" },
+    { "source": "vet-6", "target": "js-5" },
+    { "source": "vet-7", "target": "js-2" },
+    { "source": "vet-8", "target": "js-1" },
+    { "source": "vet-8", "target": "js-4" },
+
+    { "source": "job-1", "target": "js-1" },
+    { "source": "job-1", "target": "js-2" },
+    { "source": "job-2", "target": "js-3" },
+    { "source": "job-2", "target": "js-1" },
+    { "source": "job-3", "target": "js-4" },
+    { "source": "job-3", "target": "js-5" },
+    { "source": "job-4", "target": "js-5" },
+    { "source": "job-5", "target": "js-5" },
+    { "source": "job-5", "target": "js-1" }
+  ]
+}

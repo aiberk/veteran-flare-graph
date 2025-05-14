@@ -1,0 +1,147 @@
+/* styles.css */
+/* globally make the page a column flex so the SVG can flex-grow */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* by default the <svg> is full-screen */
+svg {
+  flex: 1; /* grow to fill available vertical space */
+  width: 100%;
+  height: auto; /* height determined by flex */
+}
+
+/* on small viewports, pin the details to the bottom */
+/* ————————— tablet & small desktop ————————— */
+@media (min-width: 768px) and (max-width: 1200px) {
+  /* lay out chart and details side by side */
+  body {
+    flex-direction: row;
+  }
+
+  /* SVG takes ~70% of the width, leaves room for the details pane */
+  svg {
+    flex: none; /* opt out of flex:1 */
+    width: 70vw; /* or any %, e.g. 65%, 75% */
+    height: calc(100vh - 40px); /* subtract any top/bottom padding if needed */
+    margin: 0; /* reset margins */
+  }
+
+  /* reposition details to the right rather than floating */
+  node-details {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    width: 30vw; /* complement to svg’s 70vw */
+    max-height: none;
+    border-radius: 0 8px 8px 0;
+    margin: 0;
+  }
+}
+
+/* ————————— phone & narrow viewport ————————— */
+@media (max-width: 767px) {
+  /* stack chart on top of details */
+  body {
+    flex-direction: column;
+  }
+
+  /* SVG fills full width, but give it only the space _above_ the bottom drawer */
+  svg {
+    flex: none;
+    width: 100%;
+    height: calc(100vh - 50vh);
+    transform: translate(0, -200px); /* if your details pane is 50vh tall */
+  }
+
+  /* details stick to the bottom as before */
+  node-details {
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    left: 0;
+    width: 100%;
+    max-height: 50vh; /* match the calc() above */
+    border-radius: 8px 8px 0 0;
+    overflow-y: auto;
+  }
+
+  #details {
+    display: none;
+  }
+}
+
+.link {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1px;
+  stroke-opacity: 0.3;
+}
+.link.highlight {
+  stroke: url(#linkHighlightGradient);
+  stroke-opacity: 1;
+  stroke-width: 4;
+}
+.link.vetjob-highlight {
+  stroke: goldenrod;
+  stroke-opacity: 1;
+  stroke-width: 4;
+}
+
+circle.node-highlight {
+  stroke: orange;
+  stroke-width: 2px;
+}
+
+text {
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+/* DETAILS CARD */
+#details {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 260px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  font: 13px sans-serif;
+  color: #333;
+}
+#details h3 {
+  margin: 0 0 8px;
+  font-size: 1.1em;
+  color: #222;
+}
+#details .type {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+#details pre {
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  overflow-x: auto;
+}
+#details ul {
+  padding-left: 16px;
+  margin: 8px 0;
+}
+#details ul li {
+  margin-bottom: 4px;
+}

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Veteran–Job Skill Bundling</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      body {
+        font: 12px sans-serif;
+        margin: 0;
+        overflow: hidden;
+      }
+      svg {
+        display: block;
+      }
+      .link {
+        fill: none;
+        stroke: #999;
+        stroke-opacity: 0.1;
+      }
+      .link.highlight {
+        stroke: orange;
+        stroke-opacity: 1;
+        stroke-width: 2;
+      }
+      .node text {
+        font: 10px sans-serif;
+        pointer-events: none;
+      }
+      #details {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 220px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid #ccc;
+        font: 12px sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="details"><em>Click a node for details</em></div>
+    <script>
+      // ——— richer node set ———
+      const data = {
+        nodes: [
+          // 8 Veterans
+          { id: "vet-1", type: "veteran", name: "John Doe" },
+          { id: "vet-2", type: "veteran", name: "Jane Smith" },
+          { id: "vet-3", type: "veteran", name: "Bob Johnson" },
+          { id: "vet-4", type: "veteran", name: "Alice Williams" },
+          { id: "vet-5", type: "veteran", name: "Carlos Diaz" },
+          { id: "vet-6", type: "veteran", name: "Emily Zhang" },
+          { id: "vet-7", type: "veteran", name: "Samuel Lee" },
+          { id: "vet-8", type: "veteran", name: "Patricia O'Connor" },
+
+          // 5 MOS skills
+          { id: "mos-1", type: "moc_skill", name: "Infantry (11B)" },
+          { id: "mos-2", type: "moc_skill", name: "Logistics (92F)" },
+          { id: "mos-3", type: "moc_skill", name: "Culinary (12B)" },
+          { id: "mos-4", type: "moc_skill", name: "Medical (68W)" },
+          { id: "mos-5", type: "moc_skill", name: "Signals (25B)" },
+
+          // 5 Job skills
+          { id: "js-1", type: "job_skill", name: "Leadership" },
+          { id: "js-2", type: "job_skill", name: "Project Management" },
+          { id: "js-3", type: "job_skill", name: "Welding" },
+          { id: "js-4", type: "job_skill", name: "IT Support" },
+          { id: "js-5", type: "job_skill", name: "Data Analysis" },
+
+          // 5 Jobs
+          { id: "job-1", type: "job", name: "Project Manager\nAcme Corp" },
+          { id: "job-2", type: "job", name: "Welder\nBuildIt LLC" },
+          { id: "job-3", type: "job", name: "IT Specialist\nTech Solutions" },
+          { id: "job-4", type: "job", name: "Data Analyst\nDataCorp" },
+          { id: "job-5", type: "job", name: "Trainer\nSkillUp" }
+        ],
+        links: [
+          // (we'll fill these in next)
+        ]
+      };
+
+      const width = window.innerWidth,
+        height = window.innerHeight,
+        radius = Math.min(width, height) / 2 - 100;
+
+      // group nodes by type so they sit in contiguous arcs
+      const types = ["veteran", "moc_skill", "job_skill", "job"];
+      const groups = new Map(
+        types.map((t) => [t, data.nodes.filter((d) => d.type === t)])
+      );
+
+      // compute total count and per-type start offsets
+      const total = data.nodes.length,
+        angleStep = (2 * Math.PI) / total;
+
+      // assign each node an (x,y) on the circle
+      let offset = 0;
+      types.forEach((type) => {
+        const arr = groups.get(type);
+        arr.forEach((d, i) => {
+          const angle = offset + i * angleStep;
+          d.x = radius * Math.cos(angle);
+          d.y = radius * Math.sin(angle);
+          d.angle = angle;
+        });
+        offset += arr.length * angleStep;
+      });
+
+      // build quick lookup by id
+      const nodeById = new Map(data.nodes.map((d) => [d.id, d]));
+
+      // draw
+      const svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2},${height / 2})`);
+
+      // links (none for now)
+      const link = svg
+        .selectAll("path.link")
+        .data(data.links)
+        .enter()
+        .append("path")
+        .attr("class", "link")
+        .attr("d", (d) => {
+          const s = nodeById.get(d.source),
+            t = nodeById.get(d.target);
+          return `M${s.x},${s.y}L${t.x},${t.y}`;
+        });
+
+      // nodes + labels
+      const node = svg
+        .selectAll("g.node")
+        .data(data.nodes)
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", (d) => `translate(${d.x},${d.y})`);
+
+      node
+        .append("circle")
+        .attr("r", 4)
+        .attr("fill", (d) => {
+          if (d.type === "veteran") return "#e41a1c";
+          if (d.type === "moc_skill") return "#377eb8";
+          if (d.type === "job_skill") return "#4daf4a";
+          return "#984ea3";
+        })
+        .style("cursor", "pointer")
+        .on("click", onClick);
+
+      node
+        .append("text")
+        .text((d) => d.name)
+        .attr("dx", (d) => (d.angle > Math.PI ? -6 : 6))
+        .attr("dy", 3)
+        .style("text-anchor", (d) => (d.angle > Math.PI ? "end" : "start"));
+
+      function onClick(event, d) {
+        // highlight links when we add them
+        link.classed(
+          "highlight",
+          (l) => l.source === d.id || l.target === d.id
+        );
+
+        // show details
+        const info = document.getElementById("details");
+        info.innerHTML = `<h4>${d.name}</h4>
+          <strong>Type:</strong> ${d.type}<br/>
+          <strong>Details:</strong><pre>${JSON.stringify(d, null, 2)}</pre>`;
+      }
+    </script>
+  </body>
+</html>
