@@ -114,6 +114,16 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
       .append("g")
       .attr("transform", `translate(${width / 2},${height / 2})`);
 
+    svg
+      .append("rect")
+      .attr("x", -width / 2)
+      .attr("y", -height / 2)
+      .attr("width", width)
+      .attr("height", height)
+      .style("fill", "transparent")
+      .lower() // send it behind everything else
+      .on("click", clearSelection);
+
     const defs = svg.append("defs");
 
     const grad = defs
@@ -327,6 +337,24 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
         .attr("r", avatarSize / 2)
         .attr("fill", "#666");
     });
+
+    function clearSelection() {
+      // remove all link & node highlight classes
+      link.classed("highlight", false).classed("vetjob-highlight", false);
+      nodeGroup.classed("node-highlight", false);
+
+      // reset details panel
+      const detailEl = document.querySelector("node-details");
+      detailEl.data = {
+        name: "",
+        type: "",
+        raw: {},
+        incoming: [],
+        outgoing: []
+      };
+      // and hide avatar
+      detailEl.shadowRoot.getElementById("avatar").hidden = true;
+    }
 
     function onClick(event, d) {
       link.classed("highlight", (l) => l.source === d || l.target === d);

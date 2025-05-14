@@ -75,9 +75,21 @@ class NodeDetails extends HTMLElement {
   }
 
   /**
+   * Reset to the “nothing selected” UI
+   */
+  clear() {
+    this.$avatar.hidden = true;
+    this.$content.innerHTML = `<em>Click a node to see details here</em>`;
+  }
+
+  /**
    * @param {{ name:string, type:string, raw:any, incoming:string[], outgoing:string[], imageUrl?:string }} data
    */
   set data({ name, type, raw, incoming, outgoing, imageUrl }) {
+    if (!name) {
+      return this.clear();
+    }
+
     if (imageUrl) {
       this.$avatar.src = imageUrl;
       this.$avatar.hidden = false;
