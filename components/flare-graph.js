@@ -305,66 +305,62 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
       .attr("transform", (d) => (d.x > Math.PI ? "rotate(180)" : "rotate(0)"))
       .text((d) => d.data.name);
 
+    // (inside your drawChart, *after* you've declared `defs`, `nodeGroup`, etc.)
     const vets = nodeGroup.filter((d) => d.data.type === "veteran");
     vets.each(function (d) {
       const g = d3.select(this),
         avatarSize = 24,
-        padding = 6,
-        flip = d.x > Math.PI;
+        avatarRad = avatarSize / 2,
+        rawNode = raw.nodes.find((n) => n.id === d.data.origId),
+        imgUrl = rawNode?.imageUrl,
+        name = d.data.name;
 
-      // 1) group (and flip on left side)
-      const chip = g
-        .append("g")
-        .attr("transform", flip ? "scale(-1,-1)" : null);
+      // 1) draw the avatar (image or gray fallback)
+      const chip = g.append("g");
 
-      // 2) text + pill
-      const txt = chip
-        .append("text")
-        .attr("x", (-10 * avatarSize) / 2 + padding)
-        .attr("dy", "0.31em")
-        .attr("text-anchor", "start")
-        .text(d.data.name);
-
-      const bbox = txt.node().getBBox();
-      chip
-        .insert("rect", "text")
-        .attr("x", bbox.x - padding)
-        .attr("y", bbox.y - padding)
-        .attr("width", bbox.width + 2 * padding)
-        .attr("height", bbox.height + 2 * padding)
-        .attr("rx", (bbox.height + 2 * padding) / 2)
-        .attr("fill", "#f0f0f0");
-
-      // 3) avatar slot
-      if (d.data.imageUrl) {
-        // define the clipPath once, in defs:
-        defs
+      if (imgUrl) {
+        chip
           .append("clipPath")
           .attr("id", `clip-${d.data.origId}`)
           .append("circle")
-          .attr("r", avatarSize / 2)
-          .attr("cx", -avatarSize / 2)
+          .attr("r", avatarRad)
+          .attr("cx", 0)
           .attr("cy", 0);
 
         chip
           .append("image")
-          .attr("href", d.data.imageUrl)
+          .attr("href", imgUrl)
           .attr("width", avatarSize)
           .attr("height", avatarSize)
-          .attr("x", -avatarSize)
-          .attr("y", -avatarSize / 2)
+          .attr("x", -avatarRad)
+          .attr("y", -avatarRad)
+          .attr("transform", "rotate(180)")
           .attr("clip-path", `url(#clip-${d.data.origId})`);
       } else {
-        // gray fallback
-        chip
-          .append("circle")
-          .attr("cx", -avatarSize / 2)
-          .attr("r", avatarSize / 2)
-          .attr("fill", "#ccc");
+        chip.append("circle").attr("r", avatarRad).attr("fill", "#ccc");
       }
 
-      // 4) keep text upright if flipped
-      if (flip) chip.selectAll("text").attr("transform", "scale(1,1)");
+      // 2) hover label (hidden by default)
+      const label = chip
+        .append("text")
+        .text(name)
+        .attr("x", 0)
+        .attr("y", avatarRad + 12) // 12px below bottom of avatar
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .attr("fill", "#333")
+        .attr("transform", "rotate(180)")
+        .style("pointer-events", "none")
+        .style("opacity", 1);
+
+      // 3) mouse events to show/hide label
+      // chip
+      //   .on("mouseover", () =>
+      //     label.transition().duration(100).style("opacity", 1)
+      //   )
+      //   .on("mouseout", () =>
+      //     label.transition().duration(100).style("opacity", 0)
+      //   );
     });
 
     function clearSelection() {
