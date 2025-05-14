@@ -88,7 +88,7 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
     // 2) compute dimensions from the current window
     const width = window.innerWidth,
       height = window.innerHeight,
-      radius = Math.min(width, height) / 2 - 250;
+      radius = Math.min(width, height) / 2 - 200;
 
     // 3) rebuild the hierarchy & root
     const flareData = buildFlareData(raw);
@@ -123,6 +123,31 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
       .on("click", clearSelection);
 
     const defs = svg.append("defs");
+
+    defs
+      .append("filter")
+      .attr("id", "dropShadow")
+      .append("feGaussianBlur")
+      .attr("in", "SourceAlpha")
+      .attr("stdDeviation", 2)
+      .attr("result", "blur");
+
+    defs
+      .select("filter")
+      .append("feOffset")
+      .attr("in", "blur")
+      .attr("dx", 1)
+      .attr("dy", 1)
+      .attr("result", "offsetBlur");
+
+    defs
+      .select("filter")
+      .append("feMerge")
+      .selectAll("feMergeNode")
+      .data(["offsetBlur", "SourceGraphic"])
+      .enter()
+      .append("feMergeNode")
+      .attr("in", (d) => d);
 
     const grad = defs
       .append("linearGradient")
@@ -313,13 +338,13 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
         avatarRad = avatarSize / 2,
         rawNode = raw.nodes.find((n) => n.id === d.data.origId),
         imgUrl = rawNode?.imageUrl,
-        name = d.data.name;
+        name = rawNode?.name || d.data.name,
+        angleDeg = (d.x * 180) / Math.PI - 90,
+        chip = g.append("g");
 
       // 1) draw the avatar (image or gray fallback)
-      const chip = g.append("g");
-
       if (imgUrl) {
-        chip
+        defs
           .append("clipPath")
           .attr("id", `clip-${d.data.origId}`)
           .append("circle")
@@ -334,37 +359,78 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
           .attr("height", avatarSize)
           .attr("x", -avatarRad)
           .attr("y", -avatarRad)
-          .attr("transform", "rotate(180)")
+          // undo the parent rotation so the face is always upright
+          .attr("transform", `rotate(${-angleDeg})`)
           .attr("clip-path", `url(#clip-${d.data.origId})`);
       } else {
         chip.append("circle").attr("r", avatarRad).attr("fill", "#ccc");
       }
 
-      // 2) hover label (hidden by default)
+      // 2) hover‐only label (hidden by default)
+      // const label = chip
+      //   .append("text")
+      //   .text(name)
+      //   .attr("x", 0)
+      //   .attr("y", avatarRad + 12) // just below the avatar
+      //   .attr("text-anchor", "middle")
+      //   .attr("font-size", "12px")
+      //   .attr("fill", "#333")
+      //   // undo the parent rotation so the text is always horizontal
+      //   .attr("transform", `rotate(${-angleDeg})`)
+      //   .style("pointer-events", "none")
+      //   .style("opacity", 0);
+
+      // capture chip's original transform (the node's rotate+translate)
+      const baseTransform = chip.attr("transform") || "";
+
       const label = chip
         .append("text")
         .text(name)
         .attr("x", 0)
-        .attr("y", avatarRad + 10) // 12px below bottom of avatar
+        .attr("y", avatarRad + 12)
         .attr("text-anchor", "middle")
         .attr("font-size", "12px")
         .attr("fill", "#333")
-        .attr("transform", "rotate(180)")
+        .attr("transform", `rotate(${-angleDeg})`)
         .style("pointer-events", "none")
         .style("opacity", 0);
 
-      const baseTransform = chip.attr("transform") || "";
+      // measure the label
+      const lb = label.node().getBBox();
 
+      // insert a white rect behind it
+      const bg = chip
+        .insert("rect", "text")
+        .attr("x", lb.x - 4)
+        .attr("y", lb.y - 2)
+        .attr("width", lb.width + 8)
+        .attr("height", lb.height + 4)
+        .attr("rx", 4) // rounded corners
+        .attr("transform", `rotate(${-angleDeg})`)
+        .attr("fill", "#fff")
+        .attr("stroke", "#ccc") // light gray border
+        .attr("stroke-width", 1)
+        .style("opacity", 0);
+
+      // 3) scale up & show label on hover
       chip
         .on("mouseover", () => {
+          // fade in text
           label.transition().duration(100).style("opacity", 1);
+          // fade in background
+          bg.transition().duration(100).style("opacity", 1);
+          // scale up entire chip
           chip
             .transition()
             .duration(100)
-            .attr("transform", baseTransform + " scale(1.5)");
+            .attr("transform", `${baseTransform} scale(1.5)`);
         })
         .on("mouseout", () => {
+          // fade out text
           label.transition().duration(100).style("opacity", 0);
+          // fade out background
+          bg.transition().duration(100).style("opacity", 0);
+          // return to original scale
           chip.transition().duration(100).attr("transform", baseTransform);
         });
     });
