@@ -17,6 +17,13 @@ svg {
   width: 100%;
   height: auto; /* height determined by flex */
 }
+img {
+  display: block;
+}
+/* honor the hidden attribute */
+img[hidden] {
+  display: none !important;
+}
 
 /* on small viewports, pin the details to the bottom */
 /* ————————— tablet & small desktop ————————— */
@@ -35,15 +42,9 @@ svg {
   }
 
   /* reposition details to the right rather than floating */
-  node-details {
-    position: relative;
-    top: auto;
-    bottom: auto;
-    left: auto;
-    width: 30vw; /* complement to svg’s 70vw */
-    max-height: none;
-    border-radius: 0 8px 8px 0;
-    margin: 0;
+
+  #details {
+    display: none;
   }
 }
 

@@ -1,8 +1,8 @@
 // flaregraph.js
-import { Path, BezierCurveFactory } from "./pathUtils.js";
+import { Path, BezierCurveFactory } from "../components/pathUtils.js";
 
 (async () => {
-  const raw = await d3.json("data.json");
+  const raw = await d3.json("data/data.json");
 
   const vetSkills = (vet) =>
     raw.links
@@ -354,7 +354,8 @@ import { Path, BezierCurveFactory } from "./pathUtils.js";
         type: d.data.type,
         raw: rawNode,
         incoming: incomingNames,
-        outgoing: outgoingNames
+        outgoing: outgoingNames,
+        imageUrl: rawNode.imageUrl
       };
     }
   } // initial draw

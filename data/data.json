@@ -4,49 +4,50 @@
       "id": "vet-1",
       "type": "veteran",
       "name": "John Doe",
-      "new": "new"
+      "imageUrl": "public/persona.jpeg"
     },
     {
       "id": "vet-2",
       "type": "veteran",
       "name": "Jane Smith",
-      "new": "new"
+
+      "imageUrl": "public/personb.jpeg"
     },
     {
       "id": "vet-3",
       "type": "veteran",
       "name": "Bob Johnson",
-      "new": "new"
+      "imageUrl": "public/personc.jpeg"
     },
     {
       "id": "vet-4",
       "type": "veteran",
       "name": "Alice Williams",
-      "new": "new"
+      "imageUrl": "public/persona.jpeg"
     },
     {
       "id": "vet-5",
       "type": "veteran",
       "name": "Carlos Diaz",
-      "new": "new"
+      "imageUrl": "public/personb.jpeg"
     },
     {
       "id": "vet-6",
       "type": "veteran",
       "name": "Emily Zhang",
-      "new": "new"
+      "imageUrl": "public/personc.jpeg"
     },
     {
       "id": "vet-7",
       "type": "veteran",
       "name": "Samuel Lee",
-      "new": "new"
+      "imageUrl": "public/persona.jpeg"
     },
     {
       "id": "vet-8",
       "type": "veteran",
       "name": "Patricia O'Connor",
-      "new": "new"
+      "imageUrl": "public/personb.jpeg"
     },
 
     {
