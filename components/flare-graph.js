@@ -192,7 +192,7 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
 
     const groupLabels = {
       veteran: "Veterans",
-      moc_skill: "MOS Skills",
+      moc_skill: "Military Occupational Skills",
       job_skill: "Job Skills",
       job: "Job Postings"
     };
@@ -200,7 +200,7 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
     const labelConfig = {
       veteran: {
         angleOffset: -5,
-        r: radius + 120,
+        r: radius + 100,
         anchor: "start",
         rotation: -85
       },
@@ -365,20 +365,6 @@ import { Path, BezierCurveFactory } from "../components/pathUtils.js";
       } else {
         chip.append("circle").attr("r", avatarRad).attr("fill", "#ccc");
       }
-
-      // 2) hover‐only label (hidden by default)
-      // const label = chip
-      //   .append("text")
-      //   .text(name)
-      //   .attr("x", 0)
-      //   .attr("y", avatarRad + 12) // just below the avatar
-      //   .attr("text-anchor", "middle")
-      //   .attr("font-size", "12px")
-      //   .attr("fill", "#333")
-      //   // undo the parent rotation so the text is always horizontal
-      //   .attr("transform", `rotate(${-angleDeg})`)
-      //   .style("pointer-events", "none")
-      //   .style("opacity", 0);
 
       // capture chip's original transform (the node's rotate+translate)
       const baseTransform = chip.attr("transform") || "";

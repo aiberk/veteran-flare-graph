@@ -3,51 +3,51 @@
     {
       "id": "vet-1",
       "type": "veteran",
-      "name": "John Doe",
-      "imageUrl": "public/persona.jpeg"
+      "name": "William H. Carney",
+      "imageUrl": "public/army_head_shots/p-0.png"
     },
     {
       "id": "vet-2",
       "type": "veteran",
-      "name": "Jane Smith",
+      "name": "Benjamin O. Davis",
 
-      "imageUrl": "public/personb.jpeg"
+      "imageUrl": "public/army_head_shots/p-12.png"
     },
     {
       "id": "vet-3",
       "type": "veteran",
-      "name": "Bob Johnson",
-      "imageUrl": "public/personc.jpeg"
+      "name": "Samantha Young",
+      "imageUrl": "public/army_head_shots/p-1.png"
     },
     {
       "id": "vet-4",
       "type": "veteran",
-      "name": "Alice Williams",
-      "imageUrl": "public/persona.jpeg"
+      "name": "Ryan Pryeur",
+      "imageUrl": "public/army_head_shots/p-3.png"
     },
     {
       "id": "vet-5",
       "type": "veteran",
-      "name": "Carlos Diaz",
-      "imageUrl": "public/personb.jpeg"
+      "name": "Carla Diaz",
+      "imageUrl": "public/army_head_shots/p-4.png"
     },
     {
       "id": "vet-6",
       "type": "veteran",
-      "name": "Emily Zhang",
-      "imageUrl": "public/personc.jpeg"
+      "name": "George S. Patton",
+      "imageUrl": "public/army_head_shots/p-5.png"
     },
     {
       "id": "vet-7",
       "type": "veteran",
-      "name": "Samuel Lee",
-      "imageUrl": "public/persona.jpeg"
+      "name": "Kim Lee",
+      "imageUrl": "public/army_head_shots/p-6.png"
     },
     {
       "id": "vet-8",
       "type": "veteran",
-      "name": "Patricia O'Connor",
-      "imageUrl": "public/personb.jpeg"
+      "name": "Mary A. Livermore",
+      "imageUrl": "public/army_head_shots/p-13.png"
     },
 
     {

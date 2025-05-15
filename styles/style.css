@@ -1,5 +1,5 @@
 /* styles.css */
-/* globally make the page a column flex so the SVG can flex-grow */
+
 html,
 body {
   height: 100%;
@@ -11,60 +11,49 @@ body {
   flex-direction: column;
 }
 
-/* by default the <svg> is full-screen */
 svg {
-  flex: 1; /* grow to fill available vertical space */
+  flex: 1;
   width: 90%;
-  height: auto; /* height determined by flex */
+  height: auto;
 }
 img {
   display: block;
   max-width: 100px;
 }
-/* honor the hidden attribute */
+
 img[hidden] {
   display: none !important;
 }
 
-/* on small viewports, pin the details to the bottom */
-/* ————————— tablet & small desktop ————————— */
 @media (min-width: 768px) and (max-width: 1200px) {
-  /* lay out chart and details side by side */
   body {
     flex-direction: row;
   }
 
-  /* SVG takes ~70% of the width, leaves room for the details pane */
   svg {
-    flex: none; /* opt out of flex:1 */
-    width: 70vw; /* or any %, e.g. 65%, 75% */
-    height: calc(100vh - 40px); /* subtract any top/bottom padding if needed */
-    margin: 0; /* reset margins */
+    flex: none;
+    width: 70vw;
+    height: calc(100vh - 40px);
+    margin: 0;
   }
-
-  /* reposition details to the right rather than floating */
 
   #details {
     display: none;
   }
 }
 
-/* ————————— phone & narrow viewport ————————— */
 @media (max-width: 767px) {
-  /* stack chart on top of details */
   body {
     flex-direction: column;
   }
 
-  /* SVG fills full width, but give it only the space _above_ the bottom drawer */
   svg {
     flex: none;
     width: 100%;
     height: calc(100vh - 50vh);
-    transform: translate(0, -200px); /* if your details pane is 50vh tall */
+    transform: translate(0, -200px);
   }
 
-  /* details stick to the bottom as before */
   node-details {
     position: fixed;
     bottom: 0;
@@ -75,9 +64,8 @@ img[hidden] {
     border-radius: 8px 8px 0 0;
     overflow-y: auto;
 
-    /* ensure padding doesn’t blow out the width */
     box-sizing: border-box;
-    /* add horizontal padding so both sides have breathing room */
+
     padding: 16px;
   }
 
@@ -113,7 +101,6 @@ text {
   pointer-events: none;
 }
 
-/* DETAILS CARD */
 #details {
   position: absolute;
   top: 20px;
