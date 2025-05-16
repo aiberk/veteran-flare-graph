@@ -40,12 +40,16 @@ template.innerHTML = `
       margin-bottom: 8px;
       display: block;
     }
-    pre {
-      background: #f5f5f5;
-      padding: 8px;
-      border-radius: 4px;
+    /* replaced <pre> with a description list */
+    dl#raw-data dt {
+      font-weight: bold;
+      margin-top: 4px;
+    }
+    dl#raw-data dd {
+      margin: 0 0 4px 16px;
+      white-space: pre-wrap;
+      font-family: monospace;
       font-size: 12px;
-      overflow-x: auto;
     }
     ul {
       padding-left: 16px;
@@ -97,19 +101,32 @@ class NodeDetails extends HTMLElement {
       this.$avatar.hidden = true;
     }
 
+    // build <dl> entries from raw object
+    const rawEntries = Object.entries(raw || {})
+      .map(([key, val]) => {
+        const pretty =
+          typeof val === "object" ? JSON.stringify(val, null, 2) : val;
+        return `<dt>${key}</dt><dd>${pretty}</dd>`;
+      })
+      .join("");
+
     this.$content.innerHTML = `
       <h3>${name}</h3>
       <span class="type">${type.replace("_", " ").toUpperCase()}</span>
+
       <div><strong>Raw Data:</strong></div>
-      <pre>${JSON.stringify(raw, null, 2)}</pre>
+      <dl id="raw-data">
+        ${rawEntries}
+      </dl>
+
       ${
-        incoming && incoming.length
+        Array.isArray(incoming) && incoming.length
           ? `<div><strong>Incoming from:</strong></div>
              <ul>${incoming.map((n) => `<li>${n}</li>`).join("")}</ul>`
           : ``
       }
       ${
-        outgoing && outgoing.length
+        Array.isArray(outgoing) && outgoing.length
           ? `<div><strong>Outgoing to:</strong></div>
              <ul>${outgoing.map((n) => `<li>${n}</li>`).join("")}</ul>`
           : ``
